@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<script
+  src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
+  <body>
+<div id='message'></div>
+<input type='text' id='size' placeholder='Size' /><br />
+<input type='submit' id='draw' value='Draw' />
+
+<div id='matrix'></div>
+
+<script>
+var size;	
+	
+$('#draw').click(function() {
+	$('#message').html('');
+	$('#matrix').html('');
+	
+	size = parseInt($('#size').val());
+	
+	if(typeof size !== 'undefined') {
+		if(size <= 2 || size >= 10000) {
+			$('#message').html('Size should be between 3 and 10000');
+		} else {
+			drawMatrix(size);
+			offset = drawM() + size;
+			drawM(offset);
+		}
+	}
+});
+
+function drawMatrix(size) {
+	lines = size + 1;
+	lineLength = size * 10;
+	matrix = document.getElementById('matrix');
+	
+	y = 1;
+	for(y; y <= lines; y++) {
+		x = 1;
+		for(x; x <= lineLength; x++) {
+			var node = document.createElement('span');
+			node.setAttribute('data-coords', x + '-' + y);
+			node.innerHTML = '-';
+			
+			matrix.appendChild(node);
+		}
+		
+		var newLine = document.createElement('br');
+		matrix.appendChild(newLine);
+	}
+}
+
+function drawM(offset = 1) {
+	drawLeftPart(offset);
+	offset = drawRightPart(offset);
+
+	drawLeftPart(offset);
+	return drawRightPart(offset); 
+}
+
+function drawLeftPart(startingPoint) {
+	var x = 0;
+	for(x; x < size; x++) {
+		var offset = startingPoint + size + x;
+		var y = 1;
+		for(y; y <= lines; y++) {
+			var coords = '[data-coords="' + offset + '-' + y + '"]';
+			var element = $(coords);
+			element.html('*');
+			offset--;
+		}
+	}	
+}
+
+function drawRightPart(startingPoint) {
+	var x = 0;
+	for(x; x < size; x++) {
+		var offset = startingPoint + size + x;
+		var y = 1;
+		for(y; y <= lines; y++) {
+			var coords = '[data-coords="' + offset + '-' + y + '"]';
+			var element = $(coords);
+			element.html('*');
+			offset++;
+		}
+	}
+
+	return offset - size;
+}
+
+
+
+</script>
+
+<style>
+#size {
+	margin-bottom: 6px;
+}
+
+#matrix {
+	margin-top: 20px;
+}
+
+#matrix span {
+    width: 8px;
+    display: inline-block;
+}
+</style>
+</body>
+</html>
